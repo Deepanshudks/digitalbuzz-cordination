@@ -23,5 +23,9 @@ export default function Home() {
     return <Loading />;
   }
 
-  return <>Redirecting...</>;
+  return (
+    <>
+      <Loading />
+    </>
+  );
 }

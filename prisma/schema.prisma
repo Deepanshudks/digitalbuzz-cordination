@@ -1,4 +1,3 @@
-// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -46,7 +45,6 @@ model User {
   createdTasks  Task[] @relation("CreatedTasks")
   taskUpdates       TaskUpdate[] @relation("UserTaskUpdates")
 
-
   @@map("users")
 }
 
@@ -59,7 +57,7 @@ model Task {
   priority    Priority @default(MEDIUM)
   status      Status   @default(PENDING)
   deadline    DateTime
-  branch      Branch?
+  branch      Branch
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   assignedBy String

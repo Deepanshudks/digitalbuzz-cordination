@@ -8,10 +8,12 @@ import {
   Clock,
   OctagonPause,
   Check,
+  Trash,
 } from "lucide-react";
 import { TaskItem } from "./Dashboard";
 import { Status, Task } from "@prisma/client";
 import { TaskModal } from "./TaskModal";
+import ConfirmDelete from "./ConfirmDelete";
 
 interface TaskCardProps {
   task: Task;
@@ -39,8 +41,7 @@ const StatusIcon: Record<Status, ReactNode> = {
 
 export const TaskCards: React.FC<TaskCardProps> = ({ task }) => {
   const [modalOpen, setModalOpen] = useState(false);
-
-  console.log(task);
+  const [DeletemodalOpen, setDeleteModalOpen] = useState(false);
 
   return (
     <div className="bg-white rounded-xl shadow p-5 w-full">
@@ -58,13 +59,26 @@ export const TaskCards: React.FC<TaskCardProps> = ({ task }) => {
 
           <p className="text-sm text-gray-500 ">{task?.clientName}</p>
         </div>
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-medium ${
-            priorityColors[task.priority]
-          }`}
-        >
-          {task.priority}
-        </span>
+        <p className="flex items-center gap-4">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium ${
+              priorityColors[task.priority]
+            }`}
+          >
+            {task.priority}
+          </span>
+
+          <span>
+            {" "}
+            <Trash
+              onClick={() => {
+                setDeleteModalOpen(true);
+              }}
+              size={20}
+              className="text-red-600 cursor-pointer hover:text-red-900"
+            />{" "}
+          </span>
+        </p>
       </div>
 
       {/* Description */}
@@ -119,6 +133,11 @@ export const TaskCards: React.FC<TaskCardProps> = ({ task }) => {
         title={task.title}
         clientName={task.clientName}
         defaultStatus={task.status}
+      />
+      <ConfirmDelete
+        open={DeletemodalOpen}
+        setDeleteModalOpen={setDeleteModalOpen}
+        taskId={task.id}
       />
     </div>
   );

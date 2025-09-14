@@ -1,25 +1,20 @@
 "use client";
 
+import { User } from "@prisma/client";
 import {
   createContext,
-  useContext,
-  useState,
-  useEffect,
   ReactNode,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 import toast from "react-hot-toast";
-
-interface User {
-  id: string;
-  username: string;
-  role: string;
-  branch: string;
-}
 
 interface AuthContextType {
   user: User | null;
   logout: () => void;
   loading: boolean;
+  setUser: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -55,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, logout, loading }}>
+    <AuthContext.Provider value={{ user, logout, loading, setUser }}>
       {children}
     </AuthContext.Provider>
   );

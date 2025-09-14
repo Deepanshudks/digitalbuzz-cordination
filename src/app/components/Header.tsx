@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { LogOut, Menu, X } from "lucide-react";
+import { LogOut, Menu, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -27,7 +27,6 @@ export default function Header() {
     <header className="bg-digitalbuzz-black  shadow-lg ">
       <div className="px-8">
         <div className="flex gap-4 justify-between items-center py-4">
-          {/* Logo */}
           <div className="flex items-center gap-4 text-gray-900">
             <div className="flex items-center">
               <div className="bg-gradient-to-r px-2 from-black to-gray-800 text-gray-900 py-2 rounded-lg">
@@ -40,7 +39,6 @@ export default function Header() {
             </h1>
           </div>
 
-          {/* Desktop User Info */}
           <div className="hidden md:flex items-center space-x-4">
             <div className="text-gray-900 text-sm">
               <div className="flex items-center space-x-2">
@@ -59,6 +57,17 @@ export default function Header() {
                 {user?.branch}
               </div>
             </div>
+            {user?.role === "ADMIN" && (
+              <button
+                onClick={() => {
+                  router.push("/signup");
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-slate-50 cursor-pointer px-4 py-2 rounded-lg transition-colors text-sm flex items-center space-x-1"
+              >
+                <Plus className="h-4 w-3" />
+                <span>User</span>
+              </button>
+            )}
             <button
               onClick={() => {
                 logout();
@@ -71,11 +80,10 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-900 p-2"
+              className="text-gray-900 cursor-pointer p-2"
             >
               {mobileMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -86,7 +94,6 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-700 pb-4">
             <div className="pt-4 space-y-3">
@@ -107,6 +114,18 @@ export default function Header() {
                   {user?.branch}
                 </div>
               </div>
+              {user?.role === "ADMIN" && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    router.push("/signup");
+                  }}
+                  className="bg-blue-600 hover:bg-blue-700 cursor-pointer text-slate-50 px-4 py-2 rounded-lg transition-colors text-sm flex items-center space-x-2 w-full"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>User</span>
+                </button>
+              )}
               <button
                 onClick={async () => {
                   await logout();

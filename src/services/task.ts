@@ -95,3 +95,27 @@ export async function TaskUpdateFn({
     );
   }
 }
+
+export async function deleteTaskFn({
+  id,
+}: {
+  id: string;
+}): Promise<TaskUpdatesResponse> {
+  try {
+    const response = await axios.delete<TaskUpdatesResponse>(
+      `/api/tasks/${id}`,
+      {
+        withCredentials: true,
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.error || error.message || "Failed to create task"
+    );
+  }
+}
