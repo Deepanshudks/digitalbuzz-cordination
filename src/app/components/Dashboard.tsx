@@ -8,8 +8,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getTasks } from "@/services/task";
 import DropDownInput from "./utils/DropDownInput";
 import { Priority, Status, Branch, Role } from "@prisma/client";
-import { branches, priorityOption, statusOption } from "../static";
+import { branches, priorityOption, statusOption, teamMember } from "../static";
 import { useAuth } from "@/context/AuthContext";
+import TaskCardSkeleton from "./TaskCardSkeleton";
+import DashboardSkeleton from "./DashboardSkeleton";
 
 export interface UserRef {
   username: string;
@@ -49,11 +51,12 @@ export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
+  const [team, setTeam] = useState("");
   const [branch, setBranch] = useState(user?.branch as Branch);
 
   const { data: tasks, isLoading } = useQuery({
-    queryKey: ["taskList", status, priority, branch],
-    queryFn: () => getTasks({ priority, status, branch }),
+    queryKey: ["taskList", status, priority, branch, team],
+    queryFn: () => getTasks({ priority, status, branch, team }),
   });
 
   return (
@@ -90,13 +93,24 @@ export default function DashboardPage() {
 
                 <div className="space-y-2">
                   <DropDownInput
-                    options={branches}
+                    options={[{ label: "All", value: "" }, ...branches]}
                     name="branch"
                     label="Branch"
                     className="w-full"
                     placeholder="All Departments"
                     value={branch}
                     setValue={setBranch}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <DropDownInput
+                    options={[{ label: "All", value: "" }, ...teamMember]}
+                    name="teamMember"
+                    placeholder="Select Team"
+                    className="w-full"
+                    label="Team"
+                    value={team}
+                    setValue={setTeam}
                   />
                 </div>
               </div>
@@ -115,7 +129,9 @@ export default function DashboardPage() {
 
         <div className="space-y-4 px-4 ">
           {isLoading ? (
-            <p>Loading tasks…</p>
+            <>
+              <DashboardSkeleton />
+            </>
           ) : tasks && tasks.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {tasks.map((task) => (

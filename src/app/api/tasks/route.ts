@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     const statusParam = url.searchParams.get("status");
     const priorityParam = url.searchParams.get("priority");
     const branchParam = url.searchParams.get("branch");
+    const teamParam = url.searchParams.get("team");
 
     const status =
       statusParam && Object.values(Status).includes(statusParam as Status)
@@ -24,6 +25,8 @@ export async function GET(request: NextRequest) {
       branchParam && Object.values(Branch).includes(branchParam as Branch)
         ? (branchParam as Branch)
         : undefined;
+
+    const team = teamParam ? (teamParam as string) : undefined;
 
     const priority =
       priorityParam &&
@@ -36,6 +39,7 @@ export async function GET(request: NextRequest) {
         status,
         priority,
         branch,
+        assignedTo: team,
       },
       orderBy: { createdAt: "desc" },
     });

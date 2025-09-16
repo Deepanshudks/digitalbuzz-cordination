@@ -73,6 +73,12 @@ const DropDownInput = <T extends string | number | null>({
     <Autocomplete
       disableClearable
       loading={loading}
+      slotProps={{
+        paper: {
+          className:
+            "[&_.MuiAutocomplete-option]:text-xs sm:[&_.MuiAutocomplete-option]:text-sm md:[&_.MuiAutocomplete-option]:text-base  [&_.MuiAutocomplete-option]:py-1 [&_.MuiAutocomplete-option]:px-2",
+        },
+      }}
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
