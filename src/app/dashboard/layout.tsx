@@ -1,6 +1,3 @@
-
-
-
 export default function DashboardLayout({
   children,
 }: Readonly<{
@@ -8,17 +5,18 @@ export default function DashboardLayout({
 }>) {
   return (
     <>
-            {children}
-<footer className="w-full bg-zinc-300 shadow-lg text-gray-900 py-4">
-      <div className="max-w-7xl px-4 flex flex-col items-center sm:flex-row sm:justify-edit text-sm text-center sm:text-left">
-        <p className="mb-2 px-2 text-center sm:mb-0">
-          © 2025 <span className="font-semibold text-black">Digitalbuzz</span>. All rights reserved.
-        </p>
-        <p>
-          ~ Build by <span className="font-semibold text-black">Anurag</span>
-        </p>
-      </div>
-    </footer>
-        </>
+      {children}
+
+      <footer className="w-full bg-white border-t border-gray-200 py-4">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center sm:flex-row sm:justify-between text-sm text-gray-600">
+          <p className="mb-2 sm:mb-0">
+            © 2025 <span className="font-semibold text-gray-900">Digitalbuzz</span>. All rights reserved.
+          </p>
+          <p>
+            ~ Build by <span className="font-semibold text-gray-900">Anurag</span>
+          </p>
+        </div>
+      </footer>
+    </>
   );
 }
