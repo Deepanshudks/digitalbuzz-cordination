@@ -9,10 +9,10 @@ export default function DashboardLayout({
   return (
     <>
             {children}
-<footer className="w-full bg-gray-900 text-gray-300 py-4">
+<footer className="w-full bg-zinc-300 shadow-lg text-gray-900 py-4">
       <div className="max-w-7xl mx-auto px-4 flex flex-col items-center sm:flex-row sm:justify-between text-sm text-center sm:text-left">
-        <p className="mb-2 sm:mb-0">
-          © 2025 <span className="font-semibold text-white">Anex</span>. All rights reserved.
+        <p className="mb-2 text-center sm:mb-0">
+          © 2025 <span className="font-semibold text-white">Digitalbuzz</span>. All rights reserved.
         </p>
         <p>
           ~ Build by <span className="font-semibold text-white">Anurag</span>
