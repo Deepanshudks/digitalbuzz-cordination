@@ -41,11 +41,9 @@ const StatusIcon: Record<Status, ReactNode> = {
 
 export const TaskCards: React.FC<TaskCardProps> = ({ task }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [DeletemodalOpen, setDeleteModalOpen] = useState(false);
 
   return (
     <div className="bg-white rounded-xl shadow p-5 w-full">
-      {/* Priority */}
       <div className="flex justify-between items-start">
         <div>
           <p className="flex gap-1 justify-center items-center">
@@ -67,24 +65,11 @@ export const TaskCards: React.FC<TaskCardProps> = ({ task }) => {
           >
             {task.priority}
           </span>
-
-          <span>
-            {" "}
-            <Trash
-              onClick={() => {
-                setDeleteModalOpen(true);
-              }}
-              size={20}
-              className="text-red-600 cursor-pointer hover:text-red-900"
-            />{" "}
-          </span>
         </p>
       </div>
 
-      {/* Description */}
       <p className=" text-gray-600 py-2">{task.description}</p>
 
-      {/* Meta info */}
       <div className=" space-y-2 text-sm">
         <div className="flex items-center gap-2">
           <User size={16} className="!text-gray-600" />
@@ -133,11 +118,6 @@ export const TaskCards: React.FC<TaskCardProps> = ({ task }) => {
         title={task.title}
         clientName={task.clientName}
         defaultStatus={task.status}
-      />
-      <ConfirmDelete
-        open={DeletemodalOpen}
-        setDeleteModalOpen={setDeleteModalOpen}
-        taskId={task.id}
       />
     </div>
   );

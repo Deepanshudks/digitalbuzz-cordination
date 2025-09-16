@@ -2,12 +2,14 @@ import React from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DropDownInput from "./utils/DropDownInput";
-import { branches } from "../static";
+import { branches, teamMember } from "../static";
 
 interface StatusFilterProps {
   status: string;
   branch: string;
   setStatus: (status: string) => void;
+  team: string;
+  setTeam: (status: string) => void;
   setBranch: (status: string) => void;
 }
 
@@ -16,6 +18,8 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
   setStatus,
   branch,
   setBranch,
+  team,
+  setTeam,
 }) => {
   const statuses = ["", "PENDING", "IN_PROGRESS", "COMPLETED", "ON_HOLD"];
 
@@ -104,15 +108,24 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
             })}
           </Menu>
         </div>
-        <div className="px-4">
+        <div className="px-4 flex gap-2">
           <DropDownInput
-            options={branches}
+            options={[{ label: "All", value: "" }, ...branches]}
             name="branch"
             placeholder="Select branch"
-            className="w-40"
-            label="Select Branch"
+            className="w-24 !text-xs sm:w-40"
+            label="Branch"
             value={branch}
             setValue={setBranch}
+          />
+          <DropDownInput
+            options={[{ label: "All", value: "" }, ...teamMember]}
+            name="teamMember"
+            placeholder="Select Team"
+            className="w-20 !text-xs sm:w-40"
+            label="Team"
+            value={team}
+            setValue={setTeam}
           />
         </div>
       </div>

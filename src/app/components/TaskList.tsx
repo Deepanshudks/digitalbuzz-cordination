@@ -7,15 +7,15 @@ import { getTasks } from "@/services/task";
 import TaskCardSkeleton from "./TaskCardSkeleton";
 import AdminTaskCard from "./AdminTaskCard";
 import StatusFilter from "./StatusFilter";
-import { Branch } from "@prisma/client";
 
 export default function TaskList() {
   const [status, setStatus] = useState("");
   const [branch, setBranch] = useState("");
+  const [team, setTeam] = useState("");
 
   const { data: tasks, isLoading } = useQuery({
-    queryKey: ["admintaskList", status, branch],
-    queryFn: () => getTasks({ status, branch }),
+    queryKey: ["admintaskList", status, branch, team],
+    queryFn: () => getTasks({ status, branch, team }),
   });
 
   return (
@@ -25,6 +25,8 @@ export default function TaskList() {
         setBranch={setBranch}
         setStatus={setStatus}
         status={status}
+        team={team}
+        setTeam={setTeam}
       />
 
       {isLoading ? (

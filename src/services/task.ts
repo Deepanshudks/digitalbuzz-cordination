@@ -6,6 +6,7 @@ export async function getTasks(params?: {
   status?: string;
   priority?: string;
   branch?: string;
+  team?: string;
 }): Promise<Task[]> {
   try {
     const response = await axios.get<Task[]>(`/api/tasks`, {
