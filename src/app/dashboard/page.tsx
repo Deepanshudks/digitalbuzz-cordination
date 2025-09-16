@@ -6,25 +6,20 @@ import DashboardPage from "../components/Dashboard";
 import { useRouter } from "next/navigation";
 import Loading from "../components/Loading";
 
-const page = () => {
+const Page = () => {
   const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login");
+      router.replace("/login");
     }
   }, [user, loading, router]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
-  if (!user) {
-    return null;
-  }
+  if (loading) return <Loading />;
+  if (!user) return null;
 
   return <>{user.role === "ADMIN" ? <AdminDashboard /> : <DashboardPage />}</>;
 };
 
-export default page;
+export default Page;

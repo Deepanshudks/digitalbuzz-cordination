@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { authenticateRequest } from "@/lib/auth";
-import { Priority, Status } from "@prisma/client";
+import { Branch, Priority, Status } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,10 +13,16 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const statusParam = url.searchParams.get("status");
     const priorityParam = url.searchParams.get("priority");
+    const branchParam = url.searchParams.get("branch");
 
     const status =
       statusParam && Object.values(Status).includes(statusParam as Status)
         ? (statusParam as Status)
+        : undefined;
+
+    const branch =
+      branchParam && Object.values(Branch).includes(branchParam as Branch)
+        ? (branchParam as Branch)
         : undefined;
 
     const priority =
@@ -29,6 +35,7 @@ export async function GET(request: NextRequest) {
       where: {
         status,
         priority,
+        branch,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -53,6 +60,7 @@ export async function POST(request: NextRequest) {
     const {
       title,
       description,
+      branch,
       clientName,
       assignedBy,
       priority,
@@ -64,6 +72,7 @@ export async function POST(request: NextRequest) {
     if (
       !title ||
       !description ||
+      !branch ||
       !clientName ||
       !assignedBy ||
       !assignedTo ||
@@ -92,7 +101,7 @@ export async function POST(request: NextRequest) {
         priority: (priority as Priority) || Priority.MEDIUM,
         status: (status as Status) || Status.PENDING,
         deadline: new Date(deadline),
-        branch: user.branch,
+        branch: branch as Branch,
         createdById: user.userId,
         createdByUser: user.username,
         assignedTo,

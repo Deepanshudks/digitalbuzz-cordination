@@ -2,12 +2,13 @@
 
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { createTask } from "@/services/task";
-import { Priority, Status, Task } from "@prisma/client";
+import { Branch, Priority, Status } from "@prisma/client";
 import { useFormik } from "formik";
 import { FC } from "react";
 import DropDownInput from "./utils/DropDownInput";
-import { priorityOption } from "./Dashboard";
 import CustomInput from "./utils/CustonInput";
+import { branches, priorityOption, teamMember } from "../static";
+import toast from "react-hot-toast";
 
 type FormValues = {
   assignedBy: string;
@@ -16,6 +17,7 @@ type FormValues = {
   description: string;
   priority: Priority;
   status: Status;
+  branch: Branch;
   deadline: string;
   assignedTo: string;
 };
@@ -30,34 +32,15 @@ export const NewTaskModal: FC<NewTaskModalProps> = ({ onClose }) => {
   const { mutate: mutate, isPending } = useMutation({
     mutationFn: (values: FormValues) => createTask(values),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["taskList", "admintaskList"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["taskList"] });
+      queryClient.invalidateQueries({ queryKey: ["admintaskList"] });
+      toast.success("New Task Added");
       onClose();
     },
     onError: (error: any) => {
-      alert(error.message || "Failed to create task");
+      toast.error(error.message || "Failed to create task");
     },
   });
-
-  const teamMember = [
-    {
-      label: "Johnson",
-      value: "Johnson",
-    },
-    {
-      label: "Akshay",
-      value: "Akshay",
-    },
-    {
-      label: "Shubham",
-      value: "Shubham",
-    },
-    {
-      label: "Rupesh",
-      value: "Rupesh",
-    },
-  ];
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -67,19 +50,18 @@ export const NewTaskModal: FC<NewTaskModalProps> = ({ onClose }) => {
       description: "",
       priority: Priority.MEDIUM,
       status: Status.PENDING,
+      branch: Branch.MUMBAI,
       deadline: "",
       assignedTo: "",
     },
     onSubmit: (values) => mutate(values),
   });
 
-  console.log(formik.values);
-
   return (
     <>
       <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"></div>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="bg-white w-[90%] max-w-lg rounded-lg shadow-2xl p-6 max-h-[95vh] h-[70%] overflow-y-auto">
+        <div className="bg-white w-[90%] max-w-lg rounded-lg shadow-2xl p-6 max-h-[100%] h-[80%] overflow-y-auto">
           <h2 className="text-xl text-zinc-800 font-bold mb-4">
             Create New Task
           </h2>
@@ -121,7 +103,7 @@ export const NewTaskModal: FC<NewTaskModalProps> = ({ onClose }) => {
               <DropDownInput
                 options={priorityOption}
                 name="priority"
-                className="w-40"
+                className="w-32 md:w-40"
                 formik={formik}
                 label="Priority"
                 placeholder="Select Priority"
@@ -130,31 +112,51 @@ export const NewTaskModal: FC<NewTaskModalProps> = ({ onClose }) => {
               <CustomInput
                 type="date"
                 name="deadline"
+                slotProps={{
+                  inputLabel: {
+                    shrink: true,
+                  },
+                }}
+                InputProps={{
+                  inputProps: {
+                    min: new Date().toISOString().split("T")[0],
+                  },
+                }}
                 formik={formik}
                 className="border rounded text-zinc-900 px-3 py-2 w-1/2"
               />
             </div>
+            <div className="flex gap-2">
+              <DropDownInput
+                options={teamMember}
+                name="assignedTo"
+                className="w-32 md:w-40"
+                label="Assign To"
+                placeholder="Select team member"
+                formik={formik}
+              />
 
-            <DropDownInput
-              options={teamMember}
-              name="assignedTo"
-              className="w-40"
-              label="Assign To"
-              placeholder="Select team member"
-              formik={formik}
-            />
+              <DropDownInput
+                options={branches}
+                name="branch"
+                placeholder="Select branch"
+                className="md:w-40 w-26"
+                label="Select Branch"
+                formik={formik}
+              />
+            </div>
 
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded text-zinc-900 bg-gray-200 hover:bg-gray-300"
+                className="px-4 py-2 cursor-pointer rounded text-zinc-900 bg-gray-200 hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white"
+                className="px-4 py-2 rounded cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
                 disabled={isPending}
               >
                 {isPending ? "Creating..." : "Create Task"}

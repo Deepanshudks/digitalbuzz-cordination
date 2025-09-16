@@ -31,7 +31,7 @@ CREATE TABLE "public"."tasks" (
     "priority" "public"."Priority" NOT NULL DEFAULT 'MEDIUM',
     "status" "public"."Status" NOT NULL DEFAULT 'PENDING',
     "deadline" TIMESTAMP(3) NOT NULL,
-    "branch" "public"."Branch",
+    "branch" "public"."Branch" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "assignedBy" TEXT NOT NULL,

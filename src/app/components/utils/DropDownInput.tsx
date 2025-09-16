@@ -65,18 +65,6 @@ const DropDownInput = <T extends string | number | null>({
     selectedOption = options.find(
       (option) => option.value === formik.values[name]
     );
-    if (name.includes("applicant")) {
-      const fieldPath = name.split(".");
-      const applicantIndex = name.match(/\[(\d+)\]/)?.[1];
-      const fieldName = fieldPath[fieldPath.length - 1];
-      if (applicantIndex) {
-        selectedOption = options.find(
-          (option) =>
-            option.value ===
-            formik.values.applicant?.[Number(applicantIndex)]?.[fieldName]
-        );
-      }
-    }
   } else {
     selectedOption = options.find((option) => option.value === value);
   }

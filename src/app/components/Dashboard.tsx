@@ -4,11 +4,12 @@ import { useState } from "react";
 import { NewTaskModal } from "../components/NewTask";
 import { TaskCards } from "../components/TaskCards";
 import Header from "../components/Header";
-import { Filter } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getTasks } from "@/services/task";
 import DropDownInput from "./utils/DropDownInput";
 import { Priority, Status, Branch, Role } from "@prisma/client";
+import { branches, priorityOption, statusOption } from "../static";
+import { useAuth } from "@/context/AuthContext";
 
 export interface UserRef {
   username: string;
@@ -43,70 +44,75 @@ export interface TaskItem {
   branch?: Branch | null;
 }
 
-export const priorityOption = [
-  { label: "All", value: "" },
-  { label: "High", value: "HIGH" },
-  { label: "Medium", value: "MEDIUM" },
-  { label: "Low", value: "LOW" },
-];
-
-export const statusOption = [
-  { label: "All", value: "" },
-  { label: "Pending", value: "PENDING" },
-  { label: "In Progress", value: "IN_PROGRESS" },
-  { label: "Completed", value: "COMPLETED" },
-  { label: "On Hold", value: "ON_HOLD" },
-];
 export default function DashboardPage() {
+  const { user } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
+  const [branch, setBranch] = useState(user?.branch as Branch);
 
   const { data: tasks, isLoading } = useQuery({
-    queryKey: ["taskList", status, priority],
-    queryFn: () => getTasks({ priority, status }),
+    queryKey: ["taskList", status, priority, branch],
+    queryFn: () => getTasks({ priority, status, branch }),
   });
 
   return (
     <main className={`text-black bg-gray-50 min-h-screen`}>
-      {/* Header Section */}
       <Header />
       <div className="max-w-6xl py-6 md:py-2 mx-auto">
-        {/* Filters */}
-        <div className="flex gap-2 p-2 sm:p-4 justify-between">
-          <div className="flex gap-1 md:gap-4">
-            <p className="flex justify-center items-center">
-              <Filter size={20} />
-            </p>
+        <div className="px-6 py-5">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+            <div className="flex flex-col lg:flex-row gap-4 w-full lg:items-end">
+              <div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-4 flex-1">
+                <div className="space-y-2">
+                  <DropDownInput
+                    options={statusOption}
+                    name="status"
+                    label="Status"
+                    className="w-full"
+                    placeholder="All Status"
+                    value={status}
+                    setValue={setStatus}
+                  />
+                </div>
 
-            <DropDownInput
-              options={statusOption}
-              name="status"
-              className="w-32"
-              label="Status"
-              value={status}
-              setValue={setStatus}
-            />
-            <DropDownInput
-              options={priorityOption}
-              name="priority"
-              className="w-32"
-              label="Priority"
-              value={priority}
-              setValue={setPriority}
-            />
+                <div className="space-y-2">
+                  <DropDownInput
+                    options={priorityOption}
+                    name="priority"
+                    className="w-full"
+                    label="Priority"
+                    placeholder="All Priorities"
+                    value={priority}
+                    setValue={setPriority}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <DropDownInput
+                    options={branches}
+                    name="branch"
+                    label="Branch"
+                    className="w-full"
+                    placeholder="All Departments"
+                    value={branch}
+                    setValue={setBranch}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-end">
+                <button
+                  onClick={() => setShowModal(true)}
+                  className="px-4 py-2.5 text-sm font-medium text-slate-50 bg-gray-500 border border-gray-300 rounded-lg hover:bg-zinc-700 cursor-pointer"
+                >
+                  + New Task
+                </button>
+              </div>
+            </div>
           </div>
-          <>
-            <button
-              onClick={() => setShowModal(true)}
-              className="p-2 cursor-pointer bg-slate-600 hover:bg-slate-700 text-white rounded-lg"
-            >
-              + New Task
-            </button>
-          </>
         </div>
 
-        {/* Tasks */}
         <div className="space-y-4 px-4 ">
           {isLoading ? (
             <p>Loading tasks…</p>

@@ -1,5 +1,6 @@
 import { authenticateRequest } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { Status } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -64,9 +65,12 @@ export async function PUT(
       return NextResponse.json({ error: "Remark is required" });
     }
 
-    const task = await db.task.findFirst({
+    const task = await db.task.update({
       where: {
         id,
+      },
+      data: {
+        status: status as Status,
       },
     });
     if (!task) {
@@ -88,9 +92,63 @@ export async function PUT(
 
     return NextResponse.json({
       updatedTask,
+      status: 201,
     });
   } catch (error) {
-    console.error("Get tasks error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const user = await authenticateRequest(request);
+    console.log(user);
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const { id } = await params;
+
+    const task = await db.task.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!task) {
+      return NextResponse.json({
+        error: "Invalid Task id",
+      });
+    }
+
+    const deleteTaskHistory = await db.taskUpdate.deleteMany({
+      where: {
+        taskId: id as string,
+      },
+    });
+    if (!deleteTaskHistory) {
+      return NextResponse.json(
+        {
+          error: "Failed to delete this task",
+        },
+        { status: 400 }
+      );
+    }
+    const deleteTask = await db.task.delete({
+      where: {
+        id,
+      },
+    });
+
+    return NextResponse.json({
+      deleteTask,
+    });
+  } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
