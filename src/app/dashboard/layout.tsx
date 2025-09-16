@@ -1,9 +1,4 @@
 
-import "./globals.css";
-
-
-
-
 
 
 export default function DashboardLayout({
