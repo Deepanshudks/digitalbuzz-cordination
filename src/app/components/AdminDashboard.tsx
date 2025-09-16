@@ -1,18 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import StatsCards from "./StatsCard";
 import TaskList from "./TaskList";
 import Header from "./Header";
 import { NewTaskModal } from "./NewTask";
-
-interface Stats {
-  totalTasks: number;
-  pendingTasks: number;
-  inProgressTasks: number;
-  completedTasks: number;
-}
 
 export default function AdminDashboard() {
   const { user } = useAuth();

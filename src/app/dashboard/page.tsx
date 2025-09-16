@@ -19,7 +19,7 @@ const Page = () => {
   if (loading) return <Loading />;
   if (!user) return null;
 
-  return <>{user.role !== "ADMIN" ? <AdminDashboard /> : <DashboardPage />}</>;
+  return <>{user.role === "ADMIN" ? <AdminDashboard /> : <DashboardPage />}</>;
 };
 
 export default Page;
