@@ -6,9 +6,16 @@ import StatsCards from "./StatsCard";
 import TaskList from "./TaskList";
 import Header from "./Header";
 import { NewTaskModal } from "./NewTask";
+import { Pagination } from "@mui/material";
 
 export default function AdminDashboard() {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const { user } = useAuth();
+
+  const handleChangePage = (_: React.ChangeEvent<unknown>, newPage: number) => {
+    setPage(newPage);
+  };
 
   const [showModal, setShowModal] = useState(false);
 
@@ -22,8 +29,7 @@ export default function AdminDashboard() {
               Welcome back, {user?.username}!
             </h1>
             <p className="text-gray-600">
-              {user?.role === "ADMIN" &&
-                "Monitor all tasks across all branches."}
+              Monitor all tasks across all branches.
             </p>
           </div>
           <div className="flex gap-2 h-10">
@@ -42,7 +48,16 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-semibold text-gray-900">Tasks</h2>
         </div>
 
-        <TaskList />
+        <TaskList setPage={setPage} setTotalPage={setTotalPages} page={page} />
+        <div className="flex justify-center mt-6">
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handleChangePage}
+            variant="outlined"
+            shape="rounded"
+          />
+        </div>
       </main>
       {showModal && <NewTaskModal onClose={() => setShowModal(false)} />}
     </div>

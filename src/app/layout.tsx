@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 
 import logo from "@/app/DigiBuzz-icon.png";
 import QueryProviders from "./components/QueryProvider";
+import Footer from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
           <QueryProviders>
             <Toaster position="bottom-right" />
             {children}
+            <Footer />
           </QueryProviders>
         </AuthProvider>
       </body>

@@ -5,43 +5,38 @@ import { useQuery } from "@tanstack/react-query";
 import { BarChart3, Clock, Rocket, CheckCircle } from "lucide-react";
 
 export default function StatsCards() {
-  const { data: tasks, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["admintaskList"],
     queryFn: () => getTasks(),
   });
 
-  const totalTasks = tasks?.length;
-  const pendingTasks = tasks?.filter((t) => t.status === "PENDING").length;
-  const inProgressTasks = tasks?.filter(
-    (t) => t.status === "IN_PROGRESS"
-  ).length;
-  const completedTasks = tasks?.filter((t) => t.status === "COMPLETED").length;
+  const counts = data?.meta;
 
   const statCards = [
     {
       title: "Total Tasks",
-      value: totalTasks,
+      value: counts?.total ?? 0,
       icon: BarChart3,
       textColor: "text-blue-600",
       bgLight: "bg-blue-50",
     },
     {
       title: "Pending",
-      value: pendingTasks,
+      value: counts?.PENDING ?? 0,
       icon: Clock,
       textColor: "text-orange-600",
       bgLight: "bg-orange-50",
     },
     {
       title: "In Progress",
-      value: inProgressTasks,
+      value: counts?.IN_PROGRESS ?? 0,
       icon: Rocket,
       textColor: "text-purple-600",
       bgLight: "bg-purple-50",
     },
     {
       title: "Completed",
-      value: completedTasks,
+      value: counts?.COMPLETED ?? 0,
       icon: CheckCircle,
       textColor: "text-green-600",
       bgLight: "bg-green-50",
