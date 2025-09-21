@@ -148,7 +148,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
             name="teamMember"
             placeholder="Select Team"
             className="w-20 !text-xs sm:w-40"
-            label="Team"
+            label="Assign to"
             value={team}
             setValue={setTeam}
           />
