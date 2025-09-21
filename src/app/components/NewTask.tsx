@@ -1,14 +1,15 @@
 "use client";
 
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { createTask } from "@/services/task";
-import { Branch, Priority, Status } from "@prisma/client";
+import { Branch, Priority, Status, User } from "@prisma/client";
 import { useFormik } from "formik";
 import { FC } from "react";
 import DropDownInput from "./utils/DropDownInput";
 import CustomInput from "./utils/CustonInput";
 import { branches, priorityOption, teamMember } from "../static";
 import toast from "react-hot-toast";
+import { getOpList } from "@/services/list";
 
 type FormValues = {
   assignedBy: string;
@@ -42,6 +43,16 @@ export const NewTaskModal: FC<NewTaskModalProps> = ({ onClose }) => {
     },
   });
 
+  const { data: OpList, isLoading } = useQuery({
+    queryKey: ["OpMemberList"],
+    queryFn: () => getOpList(),
+  });
+
+  const list = OpList?.list?.map((e) => ({
+    label: e.username,
+    value: e.username,
+  }));
+
   const formik = useFormik<FormValues>({
     initialValues: {
       assignedBy: "",
@@ -61,7 +72,7 @@ export const NewTaskModal: FC<NewTaskModalProps> = ({ onClose }) => {
     <>
       <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"></div>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="bg-white w-[90%] max-w-lg rounded-lg shadow-2xl p-6 max-h-[100%] h-[80%] overflow-y-auto">
+        <div className="bg-white w-[90%] max-w-lg rounded-lg shadow-2xl p-6 max-h-[100%] h-[72%] overflow-y-auto">
           <h2 className="text-xl text-zinc-800 font-bold mb-4">
             Create New Task
           </h2>
@@ -128,7 +139,8 @@ export const NewTaskModal: FC<NewTaskModalProps> = ({ onClose }) => {
             </div>
             <div className="flex gap-2">
               <DropDownInput
-                options={teamMember}
+                options={list ?? teamMember}
+                loading={isLoading}
                 name="assignedTo"
                 className="w-32 md:w-40"
                 label="Assign To"

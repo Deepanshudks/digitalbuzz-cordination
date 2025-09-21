@@ -1,4 +1,4 @@
-import { CreateTaskInput } from "@/types";
+import { CreateTaskInput, TaskListResponse } from "@/types";
 import { Task, TaskUpdate } from "@prisma/client";
 import axios from "axios";
 
@@ -7,9 +7,11 @@ export async function getTasks(params?: {
   priority?: string;
   branch?: string;
   team?: string;
-}): Promise<Task[]> {
+  date?: string;
+  page?: number;
+}): Promise<TaskListResponse> {
   try {
-    const response = await axios.get<Task[]>(`/api/tasks`, {
+    const response = await axios.get<TaskListResponse>(`/api/tasks`, {
       params,
       withCredentials: true,
       headers: {
@@ -31,7 +33,6 @@ export async function createTask(input: CreateTaskInput): Promise<Task> {
       withCredentials: true,
       headers: {
         authorization: "Bearer " + localStorage.getItem("token"),
-
         "Content-Type": "application/json",
       },
     });

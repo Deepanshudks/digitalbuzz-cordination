@@ -1,25 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DropDownInput from "./utils/DropDownInput";
 import { branches, teamMember } from "../static";
+import CustomInput from "./utils/CustonInput";
 
 interface StatusFilterProps {
   status: string;
   branch: string;
   setStatus: (status: string) => void;
+  setPage: (page: number) => void;
   team: string;
-  setTeam: (status: string) => void;
-  setBranch: (status: string) => void;
+  setTeam: (team: string) => void;
+  setBranch: (branch: string) => void;
+  date: string;
+  setDate: (date: string) => void;
 }
 
 const StatusFilter: React.FC<StatusFilterProps> = ({
+  date,
+  setDate,
   status,
   setStatus,
   branch,
   setBranch,
   team,
   setTeam,
+  setPage,
 }) => {
   const statuses = ["", "PENDING", "IN_PROGRESS", "COMPLETED", "ON_HOLD"];
 
@@ -33,6 +40,10 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    setPage(1);
+  }, [date, branch, team, status]);
 
   const handleStatusChange = (value: string) => {
     setStatus(value);
@@ -63,7 +74,7 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
         })}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <div className="sm:hidden flex items-center bg-white p-2 rounded-xl shadow-md border border-gray-200">
           <IconButton
             onClick={handleMenuOpen}
@@ -77,13 +88,15 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
             anchorEl={anchorEl}
             open={open}
             onClose={handleMenuClose}
-            PaperProps={{
-              elevation: 3,
-              className:
-                "rounded-lg shadow-xl border border-gray-100 bg-white min-w-[150px]",
-            }}
-            MenuListProps={{
-              className: "py-2",
+            slotProps={{
+              paper: {
+                elevation: 3,
+                className:
+                  "rounded-lg shadow-xl border border-gray-100 bg-white min-w-[150px]",
+              },
+              list: {
+                className: "py-2",
+              },
             }}
           >
             {statuses.map((value) => {
@@ -108,7 +121,19 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
             })}
           </Menu>
         </div>
-        <div className="px-4 flex gap-2">
+        <div className="sm:px-4 flex flex-wrap gap-4">
+          <CustomInput
+            type="date"
+            label="Date"
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              },
+            }}
+            setValue={setDate}
+            value={date}
+            name="date"
+          />
           <DropDownInput
             options={[{ label: "All", value: "" }, ...branches]}
             name="branch"

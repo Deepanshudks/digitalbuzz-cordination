@@ -103,7 +103,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         helperText={error}
         error={!!error}
         onBlur={formik?.handleBlur || onBlur}
-        value={value || formik?.values[name]}
+        value={value ?? formik?.values[name] ?? ""}
         onChange={handleChange}
         {...rest}
       />

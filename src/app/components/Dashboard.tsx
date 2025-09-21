@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NewTaskModal } from "../components/NewTask";
 import { TaskCards } from "../components/TaskCards";
 import Header from "../components/Header";
@@ -12,6 +12,8 @@ import { branches, priorityOption, statusOption, teamMember } from "../static";
 import { useAuth } from "@/context/AuthContext";
 import TaskCardSkeleton from "./TaskCardSkeleton";
 import DashboardSkeleton from "./DashboardSkeleton";
+import { Pagination } from "@mui/material";
+import CustomInput from "./utils/CustonInput";
 
 export interface UserRef {
   username: string;
@@ -52,17 +54,34 @@ export default function DashboardPage() {
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
   const [team, setTeam] = useState("");
+  const [page, setPage] = useState(1);
+  const [date, setDate] = useState("");
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   const [branch, setBranch] = useState(user?.branch as Branch);
 
-  const { data: tasks, isLoading } = useQuery({
-    queryKey: ["taskList", status, priority, branch, team],
-    queryFn: () => getTasks({ priority, status, branch, team }),
+  const { data, isLoading } = useQuery({
+    queryKey: ["taskList", status, priority, branch, team, page, date],
+    queryFn: () => getTasks({ priority, status, branch, team, page, date }),
   });
 
+  const handleChangePage = (_: React.ChangeEvent<unknown>, newPage: number) => {
+    setPage(newPage);
+  };
+
+  useEffect(() => {
+    setPage(1);
+  }, [priority, status, team]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [page, priority, status, team, branch]);
+
   return (
-    <main className={`text-black bg-gray-50 min-h-screen`}>
+    <main ref={scrollRef} className={`text-black bg-gray-50 min-h-screen`}>
       <Header />
-      <div className="max-w-6xl py-6 md:py-2 mx-auto">
+      <div className="max-w-6xl py-6 md:py-2 mx-auto ">
         <div className="px-6 py-5">
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
             <div className="flex flex-col lg:flex-row gap-4 w-full lg:items-end">
@@ -113,6 +132,20 @@ export default function DashboardPage() {
                     setValue={setTeam}
                   />
                 </div>
+                <div className="space-y-2">
+                  <CustomInput
+                    type="date"
+                    label="Date"
+                    slotProps={{
+                      inputLabel: {
+                        shrink: true,
+                      },
+                    }}
+                    setValue={setDate}
+                    value={date}
+                    name="date"
+                  />
+                </div>
               </div>
 
               <div className="flex items-end">
@@ -127,14 +160,14 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="space-y-4 px-4 ">
+        <div className="space-y-4 px-4">
           {isLoading ? (
             <>
               <DashboardSkeleton />
             </>
-          ) : tasks && tasks.length > 0 ? (
+          ) : data?.tasks && data?.tasks?.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {tasks.map((task) => (
+              {data?.tasks?.map((task) => (
                 <TaskCards key={task.id} task={task} />
               ))}
             </div>
@@ -142,6 +175,15 @@ export default function DashboardPage() {
             "No task available"
           )}
         </div>
+      </div>
+      <div className="flex justify-center py-4">
+        <Pagination
+          count={data?.totalPages ?? 1}
+          page={page}
+          onChange={handleChangePage}
+          variant="outlined"
+          shape="rounded"
+        />
       </div>
       {showModal && <NewTaskModal onClose={() => setShowModal(false)} />}
     </main>
