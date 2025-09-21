@@ -127,7 +127,7 @@ export default function DashboardPage() {
                     name="teamMember"
                     placeholder="Select Team"
                     className="w-full"
-                    label="Team"
+                    label="Assign to"
                     value={team}
                     setValue={setTeam}
                   />

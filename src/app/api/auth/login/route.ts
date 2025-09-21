@@ -44,13 +44,15 @@ export async function POST(request: Request) {
       { expiresIn: "7d" }
     );
 
-    const { password: _, ...userWithoutPassword } = user;
-
     return NextResponse.json(
       {
         message: "Login successful",
         token,
-        user: userWithoutPassword,
+        user: {
+          username: user.username,
+          branch: user.branch,
+          role: user.role,
+        },
       },
       { status: 200 }
     );

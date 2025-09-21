@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const NotAuthorizedPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-screen bg-zinc-800 text-white px-4">
+    <div className="flex flex-col items-center justify-center h-[92vh] w-screen bg-zinc-800 text-white px-4">
       <Image
         alt="Unauthorized access"
         src={image}
